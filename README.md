@@ -1,2 +1,2 @@
-# telly-ho
+# Telly-Ho
 Flatiron CLI Project
