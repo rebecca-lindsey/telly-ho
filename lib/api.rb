@@ -24,9 +24,8 @@ class Api
       show_instance.schedule = [show_hash['show']['schedule']['time'], show_hash['show']['schedule']['days']]
       show_instance.network = show_hash['show']['network']['name']
       show_instance.web_channel = show_hash['show']['webChannel']
-      # show_instance.episodes_airing = show_hash['show']['summary']
+      show_instance.genre = show_hash['show']['genres']
     end
-    binding.pry
   end
 end
 
