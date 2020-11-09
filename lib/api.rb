@@ -15,6 +15,8 @@ class Api
     create_shows
   end
 
+  # rubocop:disable Metrics/AbcSize
+
   def create_shows
     @show_list.each do |show_hash|
       show_instance = Show.new(name: show_hash['show']['name'])
@@ -25,23 +27,11 @@ class Api
       show_instance.network = show_hash['show']['network']['name']
       show_instance.web_channel = show_hash['show']['webChannel']
       show_instance.genre = show_hash['show']['genres']
+      show_instance.type = show_hash['show']['type']
     end
   end
 end
 
+# rubocop:enable Metrics/AbcSize
+
 # airtime - runtime - summary - show
-# With show: name - status - premiered - schedule - rating - network - webChannel -summary
-
-# show_name:, show_summary:, show_premier_date:, show_status:, show_schedule:, network:, web_channel:, episodes_airing:
-
-# array_of_drinks.each do |drink_hash|
-#             # initialize a new drink
-#             drink_instance = Drink.new
-#             drink_instance = Drink.new(id: drink_hash["idDrink"], name: drink_hash["strDrink"])
-#             # assign attributes to it
-#             drink_instance.id = drink_hash["idDrink"]
-#             drink_instance.name = drink_hash["strDrink"]
-#             drink_instance.instructions = drink_hash["strInstructions"]
-#             drink_instance.glass = drink_hash["strGlass"]
-#             drink_instance.category = drink_hash["strCategory"]
-#         end

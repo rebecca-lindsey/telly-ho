@@ -16,19 +16,19 @@ class Cli
     input = gets.strip
     @date = Date.today.strftime if input == 'today'
     Api.new(@date)
-    choose_genre
+    choose_genre_welcome
   end
 
-  def chooose_type
+  def choose_type
     puts 'What type of show would you like to watch?'
-    puts '1. Documentary'
-    puts '2. Game Show'
-    puts '3. News'
-    puts '4. Reality'
-    puts '5. Sports'
-    puts '6. Talk Show'
-    puts '7. Search all other shows by genre'
-    input = gets.strip
+    puts '1. Animated'
+    puts '2. Documentary'
+    puts '3. Game Show'
+    puts '4. News'
+    puts '5. Reality'
+    puts '6. Sports'
+    puts '7. Talk Show'
+    puts '8. Search all other shows by genre'
   end
 
   def choose_genre_welcome
@@ -47,6 +47,13 @@ class Cli
     puts '8. Food'
     puts '9. History'
     puts '10. See More'
+
+    input = gets.strip
+    case input
+    when '10'
+      second_genre_set
+    else Show.list_shows_by_genre(input)
+    end
   end
 
   def second_genre_set
