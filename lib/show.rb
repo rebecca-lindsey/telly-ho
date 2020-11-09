@@ -21,13 +21,33 @@ class Show
     @@uniq_show_names.sort.each_with_index { |show, index| puts "#{index + 1}. #{show}" }
   end
 
+  def self.list_shows_by_type(type)
+    type_arr = []
+    puts type.to_s
+    @@all.each do |show|
+      if show.type == type
+        type_arr << show
+        puts "#{type_arr.length}. #{show.name}"
+      end
+    end
+    if type_arr.empty?
+      puts "There are no #{type} programs on the selected date. Please choose another type:"
+      Cli.choose_type
+    end
+  end
+
   def self.list_shows_by_genre(genre)
     genre_arr = []
+    puts genre.to_s
     @@all.each do |show|
       if show.genre.any?(genre)
         genre_arr << show
         puts "#{genre_arr.length}. #{show.name}"
       end
+    end
+    if genre_arr.empty?
+      puts "There are no #{genre} programs on the selected date. Please choose another genre:"
+      Cli.first_genre_set
     end
   end
 end
