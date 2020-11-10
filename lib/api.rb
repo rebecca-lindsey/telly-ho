@@ -24,7 +24,7 @@ class Api
       show_instance.premier_date = show_hash['show']['premiered']
       show_instance.status = show_hash['show']['status']
       show_instance.schedule = [show_hash['show']['schedule']['time'], show_hash['show']['schedule']['days']]
-      show_instance.network = show_hash['show']['network']['name']
+      show_instance.network = show_hash['show']['network']
       show_instance.web_channel = show_hash['show']['webChannel']
       show_instance.genre = show_hash['show']['genres']
       show_instance.type = show_hash['show']['type']
