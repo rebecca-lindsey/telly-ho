@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class Cli
   attr_accessor :date
 
@@ -67,42 +65,51 @@ class Cli
   end
 
   def self.first_genre_set
-    puts '1. Action'
-    puts '2. Children'
-    puts '3. Comedy'
-    puts '4. Crime'
-    puts '5. Drama'
-    puts '6. Family'
-    puts '7. Fantasy'
-    puts '8. Food'
-    puts '9. History'
-    puts '10. See More'
-
+    Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}" }
     input = gets.strip
-    case input
-    when '1', 'action'
-      Show.list_shows_by_genre('Action')
-    when '2', 'children'
-      Show.list_shows_by_genre('Children')
-    when '3', 'comedy'
-      Show.list_shows_by_genre('Comedy')
-    when '4', 'crime'
-      Show.list_shows_by_genre('Crime')
-    when '5', 'drama'
-      Show.list_shows_by_genre('Drama')
-    when '6', 'family'
-      Show.list_shows_by_genre('Family')
-    when '7', 'fantasy'
-      Show.list_shows_by_type('Fantasy')
-    when '8', 'food'
-      Show.list_shows_by_type('Food')
-    when '9', 'history'
-      Show.list_shows_by_type('History')
-    when '10'
-      second_genre_set
-    else Show.list_shows_by_genre(input)
+    if input.to_i != 0 && input.to_i <= Show.genres.length
+      category = Show.genres.sort[input.to_i - 1]
+      Show.list_shows_by_genre(category)
     end
   end
+
+  # def self.first_genre_set
+  #   puts '1. Action'
+  #   puts '2. Children'
+  #   puts '3. Comedy'
+  #   puts '4. Crime'
+  #   puts '5. Drama'
+  #   puts '6. Family'
+  #   puts '7. Fantasy'
+  #   puts '8. Food'
+  #   puts '9. History'
+  #   puts '10. See More'
+
+  #   input = gets.strip
+  #   case input
+  #   when '1', 'action'
+  #     Show.list_shows_by_genre('Action')
+  #   when '2', 'children'
+  #     Show.list_shows_by_genre('Children')
+  #   when '3', 'comedy'
+  #     Show.list_shows_by_genre('Comedy')
+  #   when '4', 'crime'
+  #     Show.list_shows_by_genre('Crime')
+  #   when '5', 'drama'
+  #     Show.list_shows_by_genre('Drama')
+  #   when '6', 'family'
+  #     Show.list_shows_by_genre('Family')
+  #   when '7', 'fantasy'
+  #     Show.list_shows_by_type('Fantasy')
+  #   when '8', 'food'
+  #     Show.list_shows_by_type('Food')
+  #   when '9', 'history'
+  #     Show.list_shows_by_type('History')
+  #   when '10'
+  #     second_genre_set
+  #   else Show.list_shows_by_genre(input)
+  #   end
+  # end
 
   def self.second_genre_set
     puts '10. Legal'
@@ -128,4 +135,3 @@ class Cli
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/CyclomaticComplexity
 end
-# rubocop:enable Metrics/ClassLength

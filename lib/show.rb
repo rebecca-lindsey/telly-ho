@@ -7,6 +7,8 @@ class Show
 
   def initialize(name:, genre:, type:)
     @name = name
+    @genre = genre
+    @type = type
     @@all << self
     genre.each { |item| @@genres << item unless @@genres.include?(item) }
     @@types << type unless @@types.include?(type)
@@ -47,20 +49,12 @@ class Show
     end
   end
 
+  # rubocop:disable Layout/LineLength
+
   def self.list_shows_by_genre(genre)
-    genre_arr = []
-    puts genre.to_s
-    @@all.each do |show|
-      if show.genre.any?(genre)
-        genre_arr << show
-        puts "#{genre_arr.length}. #{show.name}"
-      end
-    end
-    if genre_arr.empty?
-      puts "There are no #{genre} programs on the selected date. Please choose another genre:"
-      Cli.first_genre_set
-    end
+    @@all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
   end
+  # rubocop:enable Layout/LineLength
 end
 # airtime - runtime - summary - show
 # With show: name - status - premiered - schedule - rating - network - webChannel -summary
