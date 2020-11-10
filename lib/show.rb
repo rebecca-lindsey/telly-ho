@@ -27,11 +27,7 @@ class Show
   end
 
   def self.list_all_shows
-    uniq_show_names = []
-    @@all.map do |show|
-      @@uniq_show_names << show.name unless @@uniq_show_names.include?(show.name)
-    end
-    @@uniq_show_names.sort.each_with_index { |show, index| puts "#{index + 1}. #{show}" }
+    @@all.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
   end
 
   # rubocop:disable Layout/LineLength
