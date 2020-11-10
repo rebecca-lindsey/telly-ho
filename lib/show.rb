@@ -2,15 +2,26 @@ class Show
   attr_accessor :name, :summary, :premier_date, :status, :schedule, :network, :web_channel, :episodes_airing, :genre, :type
 
   @@all = []
-  @@uniq_show_names = []
+  @@genres = []
+  @@types = []
 
-  def initialize(name:)
+  def initialize(name:, genre:, type:)
     @name = name
     @@all << self
+    genre.each { |item| @@genres << item unless @@genres.include?(item) }
+    @@types << type unless @@types.include?(type)
   end
 
   def self.all
     @@all
+  end
+
+  def self.genres
+    @@genres
+  end
+
+  def self.types
+    @@types
   end
 
   def self.list_all_shows
