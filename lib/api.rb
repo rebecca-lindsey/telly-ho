@@ -28,7 +28,6 @@ class Api
       show_instance.web_channel = show_hash['show']['webChannel']
       # show_instance.genre = show_hash['show']['genres']
       # show_instance.type = show_hash['show']['type']
-      binding.pry
     end
   end
 end
