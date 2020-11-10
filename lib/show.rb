@@ -37,11 +37,11 @@ class Show
   # rubocop:disable Layout/LineLength
 
   def self.list_shows_by_type(type)
-    @@all.filter { |show| show.type == type }.sort_by(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
+    @@all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
   end
 
   def self.list_shows_by_genre(genre)
-    @@all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
+    @@all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
   end
   # rubocop:enable Layout/LineLength
 end
