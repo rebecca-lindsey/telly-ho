@@ -19,15 +19,16 @@ class Api
 
   def create_shows
     @show_list.each do |show_hash|
-      show_instance = Show.new(name: show_hash['show']['name'])
+      show_instance = Show.new(name: show_hash['show']['name'], genre: show_hash['show']['genres'], type: show_hash['show']['type'])
       show_instance.summary = show_hash['show']['summary']
       show_instance.premier_date = show_hash['show']['premiered']
       show_instance.status = show_hash['show']['status']
       show_instance.schedule = [show_hash['show']['schedule']['time'], show_hash['show']['schedule']['days']]
       show_instance.network = show_hash['show']['network']
       show_instance.web_channel = show_hash['show']['webChannel']
-      show_instance.genre = show_hash['show']['genres']
-      show_instance.type = show_hash['show']['type']
+      # show_instance.genre = show_hash['show']['genres']
+      # show_instance.type = show_hash['show']['type']
+      binding.pry
     end
   end
 end
