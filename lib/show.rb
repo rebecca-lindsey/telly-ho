@@ -52,12 +52,16 @@ class Show
   end
 
   def self.display_show(show)
-    puts show.name.to_s
+    puts show.name.to_s.colorize(:blue).bold
+    puts "Status: #{show.status}"
     puts "Premier date: #{show.premier_date}"
     puts "Genre: #{show.genre.join(', ')}"
-    puts "Airs at #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
+    puts "Air time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
     puts "Network: #{show.network}"
-    puts "Summary: #{show.summary.to_s.gsub(%r{<\w*>|</\w>}, '')}"
+    puts 'Summary: '.colorize(:magenta)
+    puts show.summary.to_s.gsub(%r{<\w*>|</\w>}, '').to_s
+    puts ''
+    Cli.return_options
   end
 end
 # airtime - runtime - summary - show
