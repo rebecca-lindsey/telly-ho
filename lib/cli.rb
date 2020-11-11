@@ -41,18 +41,25 @@ class Cli
 
   def type_selection_screen
     Show.types.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}" }
-    type_selection_validation
+    if Show.types.length == 0
+      genre_selection_screen
+    else
+      puts "#{Show.types.length + 1}. Select all other shows by genre"
+      type_selection_validation
+    end
   end
 
   # rubocop:disable Metrics/AbcSize
 
   def type_selection_validation
     input = gets.strip
-    if input.to_i != 0 && input.to_i <= Show.types.length
+    if input.to_i.positive? && input.to_i <= Show.types.length
       category = Show.types.sort[input.to_i - 1]
       Show.list_shows_by_type(category)
     elsif Show.types.sort.include?(input.capitalize)
       Show.list_shows_by_type(input.capitalize)
+    elsif input.to_i == Show.types.length + 1 || input.downcase == 'genre'
+      genre_selection_welcome
     elsif input.downcase == 'exit'
       exit_message
     else
@@ -70,18 +77,25 @@ class Cli
 
   def genre_selection_screen
     Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}" }
-    genre_selection_validation
+    if Show.genres.length == 0
+      puts 'There are no available genres! Please select by show type instead:'
+      type_selection_screen
+    else
+      puts "#{Show.genres.length + 1}. Select all other shows by genre"
+      genre_selection_validation
+    end
   end
-
   # rubocop:disable Metrics/AbcSize
 
   def genre_selection_validation
     input = gets.strip
-    if input.to_i != 0 && input.to_i <= Show.genres.length
+    if input.to_i.positive? && input.to_i <= Show.genres.length
       category = Show.genres.sort[input.to_i - 1]
       Show.list_shows_by_genre(category)
     elsif Show.genres.sort.include?(input.capitalize)
       Show.list_shows_by_genre(input.capitalize)
+    elsif input.to_i == Show.genres.length + 1 || input.downcase == 'genre'
+      type_selection_screen
     elsif input.downcase == 'exit'
       exit_message
     else
