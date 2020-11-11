@@ -37,13 +37,28 @@ class Show
   # rubocop:disable Layout/LineLength
 
   def self.list_shows_by_type(type)
-    @@all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
+    show_list = @@all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
+    # Cli.select_show_validation(show_list.length)
   end
 
   def self.list_shows_by_genre(genre)
-    @@all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
+    genre_list = @@all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}" }
+    Cli.genre_select_show_validation(genre_list)
   end
   # rubocop:enable Layout/LineLength
+
+  def self.access_show_info(name)
+    @@all.filter { |show| show.name == name }
+  end
+
+  def self.display_show(show)
+    puts show.name.to_s
+    puts "Premier date: #{show.premier_date}"
+    puts "Genre: #{show.genre.join(', ')}"
+    puts "Airs at #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
+    puts "Network: #{show.network}"
+    puts "Summary: #{show.summary.to_s.gsub(%r{<\w*>|</\w>}, '')}"
+  end
 end
 # airtime - runtime - summary - show
 # With show: name - status - premiered - schedule - rating - network - webChannel -summary

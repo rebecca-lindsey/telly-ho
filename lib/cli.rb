@@ -81,7 +81,7 @@ class Cli
       puts 'There are no available genres! Please select by show type instead:'
       type_selection_screen
     else
-      puts "#{Show.genres.length + 1}. Select all other shows by genre"
+      puts "#{Show.genres.length + 1}. Return to type menu"
       genre_selection_validation
     end
   end
@@ -105,6 +105,15 @@ class Cli
   end
 
   # rubocop:enable Metrics/AbcSize
+
+  def self.genre_select_show_validation(list)
+    input = gets.strip
+    Show.display_show(list[input.to_i - 1]) if input.to_i.positive? && input.to_i <= Show.genres.length
+    #   category = Show.genres.sort[input.to_i - 1]
+    #   Show.list_shows_by_genre(category)
+    # elsif Show.genres.sort.include?(input.capitalize)
+    #   Show.list_shows_by_genre(input.capitalize)
+  end
 
   def exit_message
     puts 'Thank you for using Telly-Ho! Happy Watching '
