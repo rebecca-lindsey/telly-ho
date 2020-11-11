@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+
 class Cli
   attr_accessor :date
 
@@ -115,8 +117,16 @@ class Cli
     #   Show.list_shows_by_genre(input.capitalize)
   end
 
+  def self.return_options
+    puts 'Enter "new date" to search on a new date'
+    puts "Or, enter 'more shows' to search for more shows on #{@@date}"
+    input = gets.strip
+  end
+
   def exit_message
     puts 'Thank you for using Telly-Ho! Happy Watching '
     exit
   end
 end
+
+# rubocop:enable Metrics/ClassLength
