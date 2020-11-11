@@ -10,6 +10,10 @@ class Show
     @genre = genre
     @type = type
     @@all << self
+    create_lists
+  end
+
+  def create_lists
     genre.each { |item| @@genres << item unless @@genres.include?(item) }
     @@types << type unless @@types.include?(type)
   end

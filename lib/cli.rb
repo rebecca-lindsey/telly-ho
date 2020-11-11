@@ -11,16 +11,27 @@ class Cli
   end
 
   def choose_date
-    puts 'Please choose a date with this format: yyyy:mm:dd (ex. 2020:05:25)'
+    puts 'Search for any date this year by entering: mm-dd (ex. 05-25)'
     puts "Or, if you want to choose from shows airing today, just enter 'today'"
     input = gets.strip
-    if input == 'today'
-      @date = Date.today.strftime
-    elsif input.downcase == 'exit'
-      exit_message
+    input.downcase == 'exit' ? exit_message : validate_date(input)
+    if !@@date.nil?
+      Api.new(@@date)
+      type_selection_welcome
+    else
+      puts 'Invalid Date!'
+      choose_date
     end
-    Api.new(@date)
-    type_selection_welcome
+  end
+
+  def validate_date(input)
+    case input
+    when 'today'
+      @@date = Date.today.strftime
+    when /\d{2}-\d{2}/
+      split = input.split('-')
+      @@date = "#{Date.today.year}-#{input}" if Date.valid_date?(Date.today.year, split[0].to_i, split[1].to_i)
+    end
   end
 
   def type_selection_welcome
