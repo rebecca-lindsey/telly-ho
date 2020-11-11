@@ -14,7 +14,11 @@ class Cli
     puts 'Please choose a date with this format: yyyy:mm:dd (ex. 2020:05:25)'
     puts "Or, if you want to choose from shows airing today, just enter 'today'"
     input = gets.strip
-    @date = Date.today.strftime if input == 'today'
+    if input == 'today'
+      @date = Date.today.strftime
+    elsif input.downcase == 'exit'
+      exit_message
+    end
     Api.new(@date)
     self.class.choose_type_welcome
   end
@@ -54,62 +58,35 @@ class Cli
     when '7', 'talk show'
       Show.list_shows_by_type('Talk Show')
     when '8', 'genre', 'search all other shows by genre'
-      choose_genre_welcome
+      genre_selection_welcome
     else puts 'Please enter one of the below options'
     end
   end
 
-  def self.choose_genre_welcome
+  def self.genre_selection_welcome
     puts 'What genre are you interested in?'
-    first_genre_set
+    genre_selection_screen
   end
 
-  def self.first_genre_set
+  def self.genre_selection_screen
     Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}" }
+    genre_selection_validation
+  end
+
+  def self.genre_selection_validation
     input = gets.strip
     if input.to_i != 0 && input.to_i <= Show.genres.length
       category = Show.genres.sort[input.to_i - 1]
       Show.list_shows_by_genre(category)
+    elsif Show.genres.sort.include?(input.capitalize)
+      Show.list_shows_by_genre(input.capitalize)
+    elsif input.downcase == 'exit'
+      exit_message
+    else
+      puts 'That is not a valid input! Please choose one of the listed genres:'
+      genre_selection_screen
     end
   end
-
-  # def self.first_genre_set
-  #   puts '1. Action'
-  #   puts '2. Children'
-  #   puts '3. Comedy'
-  #   puts '4. Crime'
-  #   puts '5. Drama'
-  #   puts '6. Family'
-  #   puts '7. Fantasy'
-  #   puts '8. Food'
-  #   puts '9. History'
-  #   puts '10. See More'
-
-  #   input = gets.strip
-  #   case input
-  #   when '1', 'action'
-  #     Show.list_shows_by_genre('Action')
-  #   when '2', 'children'
-  #     Show.list_shows_by_genre('Children')
-  #   when '3', 'comedy'
-  #     Show.list_shows_by_genre('Comedy')
-  #   when '4', 'crime'
-  #     Show.list_shows_by_genre('Crime')
-  #   when '5', 'drama'
-  #     Show.list_shows_by_genre('Drama')
-  #   when '6', 'family'
-  #     Show.list_shows_by_genre('Family')
-  #   when '7', 'fantasy'
-  #     Show.list_shows_by_type('Fantasy')
-  #   when '8', 'food'
-  #     Show.list_shows_by_type('Food')
-  #   when '9', 'history'
-  #     Show.list_shows_by_type('History')
-  #   when '10'
-  #     second_genre_set
-  #   else Show.list_shows_by_genre(input)
-  #   end
-  # end
 
   def self.second_genre_set
     puts '10. Legal'
@@ -134,4 +111,9 @@ class Cli
 
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/CyclomaticComplexity
+
+  def exit_message
+    puts 'Thank you for using Telly-Ho! Happy Watching '
+    exit
+  end
 end
