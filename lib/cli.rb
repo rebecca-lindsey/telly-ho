@@ -8,7 +8,8 @@ class Cli
   end
 
   def start
-    puts 'Welcome to Telly-Ho! Here to help your hunt for your next TV show.'
+    puts 'Welcome to Telly-Ho! Here to help your hunt for your next TV show.'.colorize(:blue)
+    puts ''
     choose_date
   end
 
@@ -42,11 +43,11 @@ class Cli
   end
 
   def type_selection_screen
-    Show.types.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}" }
+    Show.types.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}".colorize(:yellow) }
     if Show.types.length == 0
       genre_selection_screen
     else
-      puts "#{Show.types.length + 1}. Select all other shows by genre"
+      puts "#{Show.types.length + 1}. Select all other shows by genre".colorize(:magenta)
       type_selection_validation
     end
   end
@@ -57,9 +58,9 @@ class Cli
     input = gets.strip
     if input.to_i.positive? && input.to_i <= Show.types.length
       category = Show.types.sort[input.to_i - 1]
-      Show.list_shows_by_type(category)
+      list_shows_by_type(category)
     elsif Show.types.sort.include?(input.capitalize)
-      Show.list_shows_by_type(input.capitalize)
+      list_shows_by_type(input.capitalize)
     elsif input.to_i == Show.types.length + 1 || input.downcase == 'genre'
       genre_selection_welcome
     elsif input.downcase == 'exit'
@@ -78,12 +79,12 @@ class Cli
   end
 
   def genre_selection_screen
-    Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}" }
+    Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}".colorize(:yellow) }
     if Show.genres.length == 0
       puts 'There are no available genres! Please select by show type instead:'
       type_selection_screen
     else
-      puts "#{Show.genres.length + 1}. Return to type menu"
+      puts "#{Show.genres.length + 1}. Return to type menu".colorize(:magenta)
       genre_selection_validation
     end
   end
@@ -93,9 +94,9 @@ class Cli
     input = gets.strip
     if input.to_i.positive? && input.to_i <= Show.genres.length
       category = Show.genres.sort[input.to_i - 1]
-      Show.list_shows_by_genre(category)
+      list_shows_by_genre(category)
     elsif Show.genres.sort.include?(input.capitalize)
-      Show.list_shows_by_genre(input.capitalize)
+      list_shows_by_genre(input.capitalize)
     elsif input.to_i == Show.genres.length + 1 || input.downcase == 'genre'
       type_selection_screen
     elsif input.downcase == 'exit'
@@ -108,24 +109,78 @@ class Cli
 
   # rubocop:enable Metrics/AbcSize
 
-  def self.genre_select_show_validation(list)
+  def genre_select_show_validation(list)
     input = gets.strip
-    Show.display_show(list[input.to_i - 1]) if input.to_i.positive? && input.to_i <= Show.genres.length
+    display_show(list[input.to_i - 1]) if input.to_i.positive? && input.to_i <= Show.genres.length
     #   category = Show.genres.sort[input.to_i - 1]
     #   Show.list_shows_by_genre(category)
     # elsif Show.genres.sort.include?(input.capitalize)
     #   Show.list_shows_by_genre(input.capitalize)
   end
 
-  def self.return_options
+  def return_options
     puts 'Enter "new date" to search on a new date'
     puts "Or, enter 'more shows' to search for more shows on #{@@date}"
+    return_options_validation
+  end
+
+  def return_options_validation
     input = gets.strip
+    case input.downcase
+    when 'new date'
+      cli = Cli.new
+      cli.start
+    when 'more shows'
+      type_selection_welcome
+    when 'exit'
+      exit_message
+    else
+      return_options
+    end
   end
 
   def exit_message
-    puts 'Thank you for using Telly-Ho! Happy Watching '
+    puts 'Thank you for using Telly-Ho! Happy Watching '.colorize(:blue)
     exit
+  end
+
+  def list_all_shows
+    Show.all.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+  end
+
+  # rubocop:disable Layout/LineLength
+
+  def list_shows_by_type(type)
+    show_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+    # Cli.select_show_validation(show_list.length)
+  end
+
+  def list_shows_by_genre(genre)
+    genre_list = Show.all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+    genre_select_show_validation(genre_list)
+  end
+  # rubocop:enable Layout/LineLength
+
+  def access_show_info(name)
+    Show.all.filter { |show| show.name == name }
+  end
+
+  def display_show(show)
+    puts show.name.to_s.colorize(:blue).bold
+    puts "Status: #{show.status}"
+    puts "Premier date: #{show.premier_date}"
+    puts "Genre: #{show.genre.join(', ')}"
+    if show.schedule[0] == '00:00' && !show.schedule[1].empty?
+      puts "Scheduled on: #{show.schedule[1].join(', ')}"
+    elsif !show.schedule[1].empty?
+      puts "Air time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
+    else puts 'Schedule: To be detemined'
+    end
+    puts "Network: #{show.network}"
+    puts 'Summary: '.colorize(:magenta)
+    puts show.summary.to_s.gsub(%r{<\w*>|</\w>}, '').to_s
+    puts ''
+    return_options
   end
 end
 

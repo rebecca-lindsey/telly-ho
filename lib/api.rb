@@ -16,7 +16,7 @@ class Api
   end
 
   # rubocop:disable Metrics/AbcSize
-
+  # TODO: Fix 05/25 error
   def create_shows
     @show_list.each do |show_hash|
       show_instance = Show.new(name: show_hash['show']['name'], genre: show_hash['show']['genres'], type: show_hash['show']['type'])
@@ -26,8 +26,6 @@ class Api
       show_instance.schedule = [show_hash['show']['schedule']['time'], show_hash['show']['schedule']['days']]
       show_instance.network = show_hash['show']['network']['name']
       show_instance.web_channel = show_hash['show']['webChannel']
-      # show_instance.genre = show_hash['show']['genres']
-      # show_instance.type = show_hash['show']['type']
     end
   end
 end
