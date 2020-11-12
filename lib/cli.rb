@@ -102,7 +102,7 @@ class Cli
 
   def genre_selection_screen
     Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}".colorize(:yellow) }
-    if Show.genres.length == 0  #Failsafe if method is accessed with no genres
+    if Show.genres.length == 0  #Failsafe in case method is accessed with no genres
       puts 'There are no available genres!'
       type_selection_screen
     else
