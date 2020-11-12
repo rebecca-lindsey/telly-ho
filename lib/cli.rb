@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class Cli
   attr_accessor :date
 
@@ -54,8 +52,6 @@ class Cli
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
-
   def type_selection_validation
     input = gets.strip
     if input.to_i.positive? && input.to_i <= Show.types.length
@@ -73,8 +69,6 @@ class Cli
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-
   def genre_selection_welcome
     puts 'What genre are you interested in?'
     genre_selection_screen
@@ -90,7 +84,6 @@ class Cli
       genre_selection_validation
     end
   end
-  # rubocop:disable Metrics/AbcSize
 
   def genre_selection_validation
     input = gets.strip
@@ -108,8 +101,6 @@ class Cli
       genre_selection_screen
     end
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   def genre_select_show_validation(list)
     input = gets.strip
@@ -166,8 +157,6 @@ class Cli
     exit
   end
 
-  # rubocop:disable Layout/LineLength
-
   def list_shows_by_type(type)
     puts 'Please enter the number for the show you would like more info on:'
     type_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
@@ -181,22 +170,17 @@ class Cli
     puts "#{genre_list.length + 1}. Back to genre list".colorize(:magenta)
     genre_select_show_validation(genre_list)
   end
-  # rubocop:enable Layout/LineLength
-
-  # def access_show_info(name)
-  #   Show.all.filter { |show| show.name == name }
-  # end
 
   def display_show(show)
     puts show.name.to_s.colorize(:blue).bold
     puts "Status: #{show.status}"
     puts "Premier date: #{show.premier_date}"
-    puts "Genre: #{show.genre.join(', ')}"
-    if show.schedule[0] == '00:00' && !show.schedule[1].empty?
+    show.genre.empty? ? (puts 'Genre: Unlisted') : (puts "Genre: #{show.genre.join(', ')}")
+    if show.schedule[0] == '00:00'
       puts "Scheduled on: #{show.schedule[1].join(', ')}"
-    elsif !show.schedule[1].empty?
-      puts "Air time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
-    else puts 'Schedule: To be detemined'
+    elsif show.schedule[1].empty?
+      puts "Air time: #{show.schedule[0]}"
+    else puts "Air time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
     end
     puts "Network: #{show.network}"
     puts 'Summary: '.colorize(:magenta)
@@ -205,4 +189,3 @@ class Cli
     return_options
   end
 end
-# rubocop:enable Metrics/ClassLength
