@@ -155,7 +155,7 @@ class Cli
   def display_show(show)
     puts show.name.to_s.colorize(:blue).bold
     puts "Status: #{show.status}"
-    puts "Premier date: #{show.premier_date}"
+    puts "Premier Date: #{show.premier_date}"
     show.genre.empty? ? (puts 'Genre: Unlisted') : (puts "Genre: #{show.genre.join(', ')}") #Checks attribute created in initialize
     show.type.nil? ? (puts 'Type: Unlisted') : (puts "Type: #{show.type}")  #Checks attribute created in initialize
     show_schedule_validation(show)  #Checks that both elements of schedule exist and formats display
@@ -168,10 +168,10 @@ class Cli
 
   def show_schedule_validation(show)
     if show.schedule[0] == '00:00'  #Checks for unspecified time
-      puts "Scheduled on: #{show.schedule[1].join(', ')}"
+      puts "Scheduled On: #{show.schedule[1].join(', ')}"
     elsif show.schedule[1].empty? #Checks for unspecified days
-      puts "Air time: #{show.schedule[0]}"
-    else puts "Air time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}" #If both days and time exist, displays nicely
+      puts "Air Time: #{show.schedule[0]}"
+    else puts "Air Time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}" #If both days and time exist, displays nicely
     end
   end
 
