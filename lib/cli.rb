@@ -10,12 +10,14 @@ class Cli
   def start
     puts 'Welcome to Telly-Ho! Here to help your hunt for your next TV show.'.colorize(:blue)
     puts ''
+    puts "At any time, enter 'exit' to exit Telly-Ho"
+    puts ''
     choose_date
   end
 
   def choose_date
-    puts 'Search for any date this year by entering: mm-dd (ex. 05-25)'
-    puts "Or, if you want to choose from shows airing today, just enter 'today'"
+    puts 'Search for any date this year by entering: mm-dd (ex. 05-25)'.colorize(:green)
+    puts "Or, if you want to choose from shows airing today, just enter 'today'".colorize(:green)
     input = gets.strip
     input.downcase == 'exit' ? exit_message : validate_date(input)
     if !@@date.nil?
@@ -111,19 +113,36 @@ class Cli
 
   def genre_select_show_validation(list)
     input = gets.strip
-    if input.to_i.positive? && input.to_i <= Show.genres.length
+    if input.to_i.positive? && input.to_i <= list.length
       display_show(list[input.to_i - 1])
     elsif input.to_i == list.length + 1 || input.downcase == 'back'
-      genre_selection_screen
+      genre_selection_welcome
+    elsif input.downcase == 'exit'
+      exit_message
     else
-      puts 'Please enter one of the numbers listed below'
+      puts 'Invalid input!'
       list_shows_by_genre(list[0].genre.join(''))
     end
   end
 
+  def type_select_show_validation(list)
+    input = gets.strip
+    if input.to_i.positive? && input.to_i <= list.length
+      display_show(list[input.to_i - 1])
+    elsif input.to_i == list.length + 1 || input.downcase == 'back'
+      type_selection_welcome
+    elsif input.downcase == 'exit'
+      exit_message
+    else
+      puts 'Invalid input!'
+      list_shows_by_type(list[0].type.join(''))
+    end
+  end
+
   def return_options
-    puts 'Enter "new date" to search on a new date'
-    puts "Or, enter 'more shows' to search for more shows on #{@@date}"
+    puts "Enter 'new date' to restart your search on a new date".colorize(:green)
+    puts "Or, enter 'more shows' to search for more shows on #{@@date}".colorize(:green)
+    puts "If you've found your show, enter 'exit' to leave Telly-Ho".colorize(:green)
     return_options_validation
   end
 
@@ -147,28 +166,26 @@ class Cli
     exit
   end
 
-  def list_all_shows
-    Show.all.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
-  end
-
   # rubocop:disable Layout/LineLength
 
   def list_shows_by_type(type)
-    show_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
-    # Cli.select_show_validation(show_list.length)
+    puts 'Please enter the number for the show you would like more info on:'
+    type_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+    puts "#{type_list.length + 1}. Back to type list".colorize(:magenta)
+    type_select_show_validation(type_list)
   end
 
   def list_shows_by_genre(genre)
     puts 'Please enter the number for the show you would like more info on:'
     genre_list = Show.all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
-    puts "#{Show.genres.length + 1}. Back to genre list".colorize(:magenta)
+    puts "#{genre_list.length + 1}. Back to genre list".colorize(:magenta)
     genre_select_show_validation(genre_list)
   end
   # rubocop:enable Layout/LineLength
 
-  def access_show_info(name)
-    Show.all.filter { |show| show.name == name }
-  end
+  # def access_show_info(name)
+  #   Show.all.filter { |show| show.name == name }
+  # end
 
   def display_show(show)
     puts show.name.to_s.colorize(:blue).bold
