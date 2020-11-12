@@ -81,8 +81,8 @@ class Cli
   def genre_selection_screen
     Show.genres.sort.each_with_index { |category, index| puts "#{index + 1}. #{category}".colorize(:yellow) }
     if Show.genres.length == 0
-      puts 'There are no available genres! Please select by show type instead:'
-      type_selection_screen
+      puts 'There are no available genres!'
+      type_selection_welcome
     else
       puts "#{Show.genres.length + 1}. Return to type menu".colorize(:magenta)
       genre_selection_validation
@@ -98,7 +98,7 @@ class Cli
     elsif Show.genres.sort.include?(input.capitalize)
       list_shows_by_genre(input.capitalize)
     elsif input.to_i == Show.genres.length + 1 || input.downcase == 'genre'
-      type_selection_screen
+      type_selection_welcome
     elsif input.downcase == 'exit'
       exit_message
     else
@@ -111,11 +111,14 @@ class Cli
 
   def genre_select_show_validation(list)
     input = gets.strip
-    display_show(list[input.to_i - 1]) if input.to_i.positive? && input.to_i <= Show.genres.length
-    #   category = Show.genres.sort[input.to_i - 1]
-    #   Show.list_shows_by_genre(category)
-    # elsif Show.genres.sort.include?(input.capitalize)
-    #   Show.list_shows_by_genre(input.capitalize)
+    if input.to_i.positive? && input.to_i <= Show.genres.length
+      display_show(list[input.to_i - 1])
+    elsif input.to_i == list.length + 1 || input.downcase == 'back'
+      genre_selection_screen
+    else
+      puts 'Please enter one of the numbers listed below'
+      list_shows_by_genre(list[0].genre.join(''))
+    end
   end
 
   def return_options
@@ -156,7 +159,9 @@ class Cli
   end
 
   def list_shows_by_genre(genre)
+    puts 'Please enter the number for the show you would like more info on:'
     genre_list = Show.all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+    puts "#{Show.genres.length + 1}. Back to genre list".colorize(:magenta)
     genre_select_show_validation(genre_list)
   end
   # rubocop:enable Layout/LineLength
@@ -183,5 +188,4 @@ class Cli
     return_options
   end
 end
-
 # rubocop:enable Metrics/ClassLength
