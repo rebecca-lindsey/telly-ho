@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+
 class Cli
   attr_accessor :date, :entry, :selection
 
@@ -206,8 +208,90 @@ class Cli
     end
   end
 
+  def genre_select_show_validation(list)
+    input = gets.strip
+    if input.to_i.positive? && input.to_i <= list.length
+      display_show(list[input.to_i - 1])
+    elsif input.to_i == list.length + 1 || input.downcase == 'back'
+      genre_selection_welcome
+    elsif input.downcase == 'exit'
+      exit_message
+    else
+      puts 'Invalid input!'
+      list_shows_by_genre(list[0].genre.join(''))
+    end
+  end
+
+  def type_select_show_validation(list)
+    input = gets.strip
+    if input.to_i.positive? && input.to_i <= list.length
+      display_show(list[input.to_i - 1])
+    elsif input.to_i == list.length + 1 || input.downcase == 'back'
+      type_selection_welcome
+    elsif input.downcase == 'exit'
+      exit_message
+    else
+      puts 'Invalid input!'
+      list_shows_by_type(list[0].type.join(''))
+    end
+  end
+
+  def return_options
+    puts "Enter 'new date' to restart your search on a new date".colorize(:green)
+    puts "Or, enter 'more shows' to search for more shows on #{@@date}".colorize(:green)
+    puts "If you've found your show, enter 'exit' to leave Telly-Ho".colorize(:green)
+    return_options_validation
+  end
+
+  def return_options_validation
+    input = gets.strip
+    case input.downcase
+    when 'new date'
+      cli = Cli.new
+      cli.start
+    when 'more shows'
+      type_selection_welcome
+    when 'exit'
+      exit_message
+    else
+      return_options
+    end
+  end
+
   def exit_message
     puts 'Thank you for using Telly-Ho! Happy Watching '.colorize(:blue)
     exit
+  end
+
+  def list_shows_by_type(type)
+    puts 'Please enter the number for the show you would like more info on:'
+    type_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+    puts "#{type_list.length + 1}. Back to type list".colorize(:magenta)
+    type_select_show_validation(type_list)
+  end
+
+  def list_shows_by_genre(genre)
+    puts 'Please enter the number for the show you would like more info on:'
+    genre_list = Show.all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name).each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
+    puts "#{genre_list.length + 1}. Back to genre list".colorize(:magenta)
+    genre_select_show_validation(genre_list)
+  end
+
+  def display_show(show)
+    puts show.name.to_s.colorize(:blue).bold
+    puts "Status: #{show.status}"
+    puts "Premier date: #{show.premier_date}"
+    puts "Genre: #{show.genre.join(', ')}"
+    if show.schedule[0] == '00:00' && !show.schedule[1].empty?
+      puts "Scheduled on: #{show.schedule[1].join(', ')}"
+    elsif !show.schedule[1].empty?
+      puts "Air time: #{show.schedule[0]} on #{show.schedule[1].join(', ')}"
+    else puts 'Schedule: To be detemined'
+    end
+    puts "Network: #{show.network}"
+    puts 'Summary: '.colorize(:magenta)
+    puts show.summary.to_s.gsub(%r{<\w*>|</\w>}, '').to_s
+    puts ''
+    return_options
   end
 end
