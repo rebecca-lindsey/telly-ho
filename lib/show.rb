@@ -5,7 +5,7 @@ class Show
   @@genres = []
   @@types = []
 
-  def initialize(name:, genre:, type:)
+  def initialize(name:, genre: 'Unlisted', type: 'Unlisted')
     @name = name
     @genre = genre
     @type = type
@@ -30,5 +30,3 @@ class Show
     @@types
   end
 end
-# airtime - runtime - summary - show
-# With show: name - status - premiered - schedule - rating - network - webChannel -summary
