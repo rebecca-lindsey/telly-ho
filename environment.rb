@@ -1,8 +1,6 @@
-require 'pry'
+require 'bundler'
 require 'net/http'
-require 'json'
-require 'date'
-require 'colorize'
+Bundler.require(:default)
 
 require_relative './lib/show'
 require_relative './lib/cli'
