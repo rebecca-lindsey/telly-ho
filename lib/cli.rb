@@ -73,6 +73,8 @@ class Cli
   end
 
   def list_shows_by_type(type)
+    @entry = 'type'
+    @selection = type
     puts 'Please enter the number for the show you would like more info on:'
     type_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name)
     type_list.each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
@@ -83,7 +85,6 @@ class Cli
   def type_list_shows_validation(list)
     input = gets.strip
     if input.to_i.positive? && input.to_i <= list.length  #Checks for valid number of show
-      @entry = "type"
       display_show(list[input.to_i - 1])
     elsif input.to_i == list.length + 1 || input.downcase == 'back' #Checks for choice to go back to type screen
       type_selection_screen
@@ -129,6 +130,8 @@ class Cli
   end
 
   def list_shows_by_genre(genre)
+    @entry = 'genre'
+    @selection = genre
     puts 'Please enter the number for the show you would like more info on:'
     genre_list = Show.all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name)
     genre_list.each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
@@ -139,8 +142,6 @@ class Cli
   def genre_list_shows_validation(list)
     input = gets.strip
     if input.to_i.positive? && input.to_i <= list.length  #Checks for valid number
-      @entry = 'genre'
-      @selection = list[0].genre.join('')
       display_show(list[input.to_i - 1])
     elsif input.to_i == list.length + 1 || input.downcase == 'back' #Checks for number or word to go back
       genre_selection_welcome
@@ -148,7 +149,7 @@ class Cli
       exit_message
     else
       puts 'Invalid input!'
-      list_shows_by_genre(list[0].genre.join('')) #Pulls out genre from list to call the method
+      list_shows_by_genre(@selection) #Pulls out genre from list to call the method
     end
   end
 
