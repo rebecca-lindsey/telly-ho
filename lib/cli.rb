@@ -176,7 +176,7 @@ class Cli
   end
 
   def return_options
-    puts "To choose another show, enter 'back'".colorize(:green)
+    puts "To choose a different show from the previous menu, enter 'back'".colorize(:green)
     puts "To search for more shows on #{@date}, enter 'more shows'".colorize(:green)
     puts "Or, to restart your search on a new date, enter 'new date'".colorize(:green)
     puts ''
