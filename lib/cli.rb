@@ -22,8 +22,8 @@ class Cli
   def choose_date
     puts 'Search for any date this year by entering: mm-dd (ex. 05-25)'.colorize(:green)
     puts "Or, if you want to choose from shows airing today, just enter 'today'".colorize(:green)
-    input = gets.strip
-    input.downcase == 'exit' ? exit_message : date_validation(input)
+    input = gets.strip.downcase
+    input == 'exit' ? exit_message : date_validation(input)
     if !@date.nil?
       Api.new(@date)
       type_selection_screen
@@ -37,7 +37,7 @@ class Cli
     case input
     when 'today'
       @date = Date.today.strftime
-    when /\d{2}-\d{2}/
+    when /^\d{2}-\d{2}$/
       split = input.split('-')
       @date = "#{Date.today.year}-#{input}" if Date.valid_date?(Date.today.year, split[0].to_i, split[1].to_i)
     end
@@ -49,22 +49,22 @@ class Cli
     if Show.types.length == 0
       genre_selection_screen
     else
-      puts "#{Show.types.length + 1}. Select all other shows by genre".colorize(:magenta)
+      puts "#{Show.types.length + 1}. Select all other shows by genre".colorize(:magenta) if Show.genres.length != 0
       type_selection_validation
     end
   end
 
   def type_selection_validation
-    input = gets.strip
+    input = gets.strip.downcase
     if input.to_i.positive? && input.to_i <= Show.types.length  #Checks for valid number
-      @selection =  Show.types.sort[input.to_i - 1]
+      @selection = Show.types.sort[input.to_i - 1]
       list_shows_by_type(@selection)
-    elsif Show.types.sort.include?(input.capitalize)  #Checks for valid word
-      @selection = input.capitalize
+    elsif Show.types.sort.include?(input.split(" ").map(&:capitalize).join(" "))  #Checks for valid word
+      @selection = input.split(" ").map(&:capitalize).join(" ")
       list_shows_by_type(@selection)
-    elsif input.to_i == Show.types.length + 1 || input.downcase == 'genre'  #Checks for number or word to go to genres
+    elsif input.to_i == Show.types.length + 1 || input == 'genre'  #Checks for number or word to go to genres
       genre_selection_welcome
-    elsif input.downcase == 'exit'
+    elsif input == 'exit'
       exit_message
     else
       puts 'That is not a valid input! Please choose from one of the listed types'
@@ -74,7 +74,6 @@ class Cli
 
   def list_shows_by_type(type)
     @entry = 'type'
-    @selection = type
     puts 'Please enter the number for the show you would like more info on:'
     type_list = Show.all.filter { |show| show.type == type }.sort_by(&:name).uniq(&:name)
     type_list.each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
@@ -83,12 +82,12 @@ class Cli
   end
 
   def type_list_shows_validation(list)
-    input = gets.strip
+    input = gets.strip.downcase
     if input.to_i.positive? && input.to_i <= list.length  #Checks for valid number of show
       display_show(list[input.to_i - 1])
-    elsif input.to_i == list.length + 1 || input.downcase == 'back' #Checks for choice to go back to type screen
+    elsif input.to_i == list.length + 1 || input == 'back' || input == 'type' #Checks for choice to go back to type screen
       type_selection_screen
-    elsif input.downcase == 'exit'
+    elsif input == 'exit'
       exit_message
     else
       puts 'Invalid input!'
@@ -113,15 +112,19 @@ class Cli
   end
 
   def genre_selection_validation
-    input = gets.strip
+    input = gets.strip.downcase
     if input.to_i.positive? && input.to_i <= Show.genres.length #Checks for valid number
-      category = Show.genres.sort[input.to_i - 1]
-      list_shows_by_genre(category)
-    elsif Show.genres.sort.include?(input.capitalize) #Checks for valid word
-      list_shows_by_genre(input.capitalize)
-    elsif input.to_i == Show.genres.length + 1 || input.downcase == 'type' #Checks for number or word to return to types
+      @selection = Show.genres.sort[input.to_i - 1]
+      list_shows_by_genre(@selection)
+    elsif Show.genres.sort.include?(input.split("-").map(&:capitalize).join("-")) #Checks for valid word
+      @selection = input.split("-").map(&:capitalize).join("-")
+      list_shows_by_genre(@selection)
+    elsif Show.genres.sort.include?(input.split("").map(&:capitalize).join(""))
+      @selection = input.split("").map(&:capitalize).join("")
+      list_shows_by_genre(@selection)
+    elsif input.to_i == Show.genres.length + 1 || input == 'type' || input == 'back' #Checks for number or word to return to types
       type_selection_screen
-    elsif input.downcase == 'exit'
+    elsif input == 'exit'
       exit_message
     else
       puts 'That is not a valid input! Please choose one of the listed genres:'
@@ -131,7 +134,6 @@ class Cli
 
   def list_shows_by_genre(genre)
     @entry = 'genre'
-    @selection = genre
     puts 'Please enter the number for the show you would like more info on:'
     genre_list = Show.all.filter { |show| show.genre.any?(genre) unless show.genre.nil? }.sort_by(&:name).uniq(&:name)
     genre_list.each_with_index { |show, index| puts "#{index + 1}. #{show.name}".colorize(:yellow) }
@@ -140,12 +142,12 @@ class Cli
   end
 
   def genre_list_shows_validation(list)
-    input = gets.strip
+    input = gets.strip.downcase
     if input.to_i.positive? && input.to_i <= list.length  #Checks for valid number
       display_show(list[input.to_i - 1])
-    elsif input.to_i == list.length + 1 || input.downcase == 'back' #Checks for number or word to go back
+    elsif input.to_i == list.length + 1 || input == 'back' || input == 'genre' #Checks for number or word to go back
       genre_selection_welcome
-    elsif input.downcase == 'exit'
+    elsif input == 'exit'
       exit_message
     else
       puts 'Invalid input!'
@@ -186,8 +188,8 @@ class Cli
   end
 
   def return_options_validation
-    input = gets.strip
-    case input.downcase
+    input = gets.strip.downcase
+    case input
       when 'back' #Checks if it should return to a type or genre menu
         if @entry == 'type'
           list_shows_by_type(@selection)

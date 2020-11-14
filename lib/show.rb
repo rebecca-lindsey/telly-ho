@@ -1,11 +1,11 @@
 class Show
-  attr_accessor :name, :summary, :premier_date, :status, :schedule, :network, :web_channel, :episodes_airing, :genre, :type
+  attr_accessor :name, :summary, :premier_date, :status, :schedule, :network, :genre, :type
 
   @@all = []
   @@genres = []
   @@types = []
 
-  def initialize(name:, genre: 'Unlisted', type: 'Unlisted')
+  def initialize(name: 'Unnamed', genre: 'Unlisted', type: 'Unlisted')
     @name = name
     @genre = genre
     @type = type
