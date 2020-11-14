@@ -1,9 +1,9 @@
 # Telly-Ho
-Telly-Ho is a CLI program designed to help you find your next TV show by accessing the [TVMaze API](http://www.tvmaze.com/api). Using simple characteristics like date and genre, you can narrow down your watching options to a short list. From there, you can select a show to receive its showtimes and summary.
+Telly-Ho is a CLI program designed to help you find your next TV show by accessing the [TVmaze API](http://www.tvmaze.com/api). Using simple characteristics like date and genre, you can narrow down your watching options to a short list. From there, you can select a show to receive its showtimes and summary.
 ## Installation
 - Ensure that you have [Ruby](https://www.ruby-lang.org/en/downloads/) installed properly
-- Begin by forking and opening the application locally
-- To make sure that you have all necessary gems:
+- Begin by cloning the repository and navigating to the download location
+- Make sure that you have all necessary gems by running:
 ```
 bundle install
 ```
