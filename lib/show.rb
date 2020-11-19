@@ -5,10 +5,8 @@ class Show
   @@genres = []
   @@types = []
 
-  def initialize(name: 'Unnamed', genre: 'Unlisted', type: 'Unlisted')
-    @name = name
-    @genre = genre
-    @type = type
+  def initialize(args)
+    args.each { |key, value| self.send("#{key}=", value)}
     @@all << self
     create_lists
   end
